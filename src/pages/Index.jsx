@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import "../scss/Index.scss";
-import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 import ReactPlayer from "react-player";
 import Recorder from "../components/Recorder";
 import ATPM from "../assets/videos/ahoratepuedesmarchar.mp4";
@@ -19,13 +19,18 @@ function Index() {
     React.useState(false);
   const [cancionGrabada, setCancionGrabada] = React.useState(null);
   const [cancionCargada, setCancionCargada] = React.useState(false);
-  const [cancionElegida, setCancionElegida] = React.useState("Lamento Boliviano");
+  const [cancionElegida, setCancionElegida] =
+    React.useState("Lamento Boliviano");
   const [cancionReproducir, setcancionReproducir] = React.useState(false);
   const [finCancion, setFinCancion] = React.useState(false);
   const [nota, setNota] = React.useState("Calculando, por favor espere...");
-  const [similitud, setSimilitud] = React.useState("Calculando, por favor espere...");
+  const [similitud, setSimilitud] = React.useState(
+    "Calculando, por favor espere..."
+  );
   const handleCantarPausa = () => {
-    cancionReproducir ? setcancionReproducir(false) : setcancionReproducir(true);
+    cancionReproducir
+      ? setcancionReproducir(false)
+      : setcancionReproducir(true);
   };
   const cancionesURL = {
     "Lamento Boliviano": "https://www.youtube.com/watch?v=djrZ2GmY0Eg",
@@ -61,7 +66,7 @@ function Index() {
 
   const saveRecorderSound = async () => {
     const audioBlob = await fetch(cancionGrabada.url).then((r) => r.blob());
-    const audioFile = new File([audioBlob], 'voice.wav', { type: 'audio/wav' });
+    const audioFile = new File([audioBlob], "voice.wav", { type: "audio/wav" });
     // const url = URL.createObjectURL(blob);
     // const audioFile = new File([blob], "voice.wav", {
     //   type: "audio/wav",
@@ -97,11 +102,38 @@ function Index() {
     // setSeleccionarArchivoPopup(false);
     // setMostrarCalificacionPopUp(true);
   };
-
+  const calificarCancionCargada = () => {
+    const fileContent = cancionCargada;
+    const blob = new Blob([fileContent], { type: "audio/mpeg" });
+    const url = URL.createObjectURL(blob);
+    const audioFile = new File([blob], "voice.wav", {
+      type: "audio/wav",
+    });
+    const formData = new FormData(); // preparing to send to the server
+    formData.append("audio", audioFile);
+    //ahora agregamos tamben la variabel cancionElegida al envio
+    formData.append("cancion", cancionElegida);
+    return fetch("http://localhost:5000/send-audio", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setNota(data.nota);
+        setSimilitud(data.similitud);
+        setSeleccionarArchivoPopup(false);
+        setMostrarCalificacionPopUp(true);
+      });
+  };
   React.useEffect(() => {
     if (cancionGrabada) {
-      console.log(cancionGrabada);
-      saveRecorderSound();
+      // saveRecorderSound();
+      toast.promise(saveRecorderSound(), {
+        loading: "Calificando...",
+        success: <b>Calificando la cancion</b>,
+        error: <b>Error en el servidor intente denuevo</b>,
+      });
     }
   }, [cancionGrabada]);
   return (
@@ -130,7 +162,7 @@ function Index() {
           <ReactPlayer
             url={cancionesURL[cancionElegida]}
             playing={cancionReproducir}
-            controls={false}
+            controls={true}
             onEnded={() => {
               setcancionReproducir(false);
               setFinCancion(true);
@@ -172,7 +204,9 @@ function Index() {
                 <option>Te Puedes Marchar</option> */}
               </datalist>
             </div>
-            <button onClick={() => setSeleccionarCancionPopup(false)}>Cerrar</button>
+            <button onClick={() => setSeleccionarCancionPopup(false)}>
+              Cerrar
+            </button>
           </div>
         </div>
       )}
@@ -188,29 +222,15 @@ function Index() {
             </div>
             <button
               onClick={async () => {
-                console.log(cancionCargada);
-                const fileContent = cancionCargada;
-                const blob = new Blob([fileContent], { type: "audio/mpeg" });
-                const url = URL.createObjectURL(blob);
-                const audioFile = new File([blob], "voice.wav", {
-                  type: "audio/wav",
+                // toast('Calificando la cancion', {
+                //   icon: '🎤',
+                // });
+                toast.promise(calificarCancionCargada(), {
+                  loading: "Calificando...",
+                  success: <b>Calificando la cancion</b>,
+                  error: <b>Error en el servidor intente denuevo</b>,
                 });
-                const formData = new FormData(); // preparing to send to the server
-                formData.append("audio", audioFile);
-                //ahora agregamos tamben la variabel cancionElegida al envio
-                formData.append("cancion", cancionElegida);
-                return fetch("http://localhost:5000/send-audio", {
-                  method: "POST",
-                  body: formData,
-                })
-                  .then((res) => res.json())
-                  .then((data) => {
-                    console.log(data);
-                    setNota(data.nota);
-                    setSimilitud(data.similitud);
-                    setSeleccionarArchivoPopup(false);
-                    setMostrarCalificacionPopUp(true);
-                  });
+
                 // blobToBase64(blob).then((base64Data) => {
                 //   console.log(base64Data);
                 //   const file = base64Data;
@@ -269,6 +289,7 @@ function Index() {
           </div>
         </div>
       )}
+      <Toaster position="top-center" reverseOrder={false} />
     </React.Fragment>
   );
 }
