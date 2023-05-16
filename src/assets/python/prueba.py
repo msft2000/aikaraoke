@@ -5,9 +5,9 @@ import base64
 app = Flask(__name__)
 CORS(app)
 
-@app.route("/numero", methods=["POST"])
+@app.route("/send-audio", methods=["POST"])
 def obtener_numero():
-    archivo = request.files['link']
+    archivo = request.files['audio']
     archivo.save('./archivo.wav') 
     # audio_base64 = request.json.get("link")
     # Realiza cualquier procesamiento adicional con el enlace si es necesario

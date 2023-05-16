@@ -60,23 +60,41 @@ function Index() {
   };
 
   const saveRecorderSound = async () => {
-    const fileContent = cancionGrabada.blobURL;
-    const blob = new Blob([fileContent], { type: "audio/mpeg" });
+    const fileContent = cancionGrabada;
+    const blob = new Blob([fileContent], { type: "audio/wav" });
     const url = URL.createObjectURL(blob);
-    const link = url; // El link que deseas enviar
-    const response = await fetch("http://localhost:5000/numero", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ link }),
+    const audioFile = new File([blob], "voice.wav", {
+      type: "audio/wav",
     });
-    const data = await response.json();
-    console.log(data);
-    setNota(data.nota);
-    setSimilitud(data.similitud);
-    setSeleccionarArchivoPopup(false);
-    setMostrarCalificacionPopUp(true);
+    const formData = new FormData(); // preparing to send to the server
+    formData.append("audio", audioFile);
+    return fetch("http://localhost:5000/send-audio", {
+      method: "POST",
+      body: formData,
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setNota(data.nota);
+        setSimilitud(data.similitud);
+        setSeleccionarArchivoPopup(false);
+        setMostrarCalificacionPopUp(true);
+      });
+    // const url = URL.createObjectURL(blob);
+    // const link = url; // El link que deseas enviar
+    // const response = await fetch("http://localhost:5000/numero", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ link }),
+    // });
+    // const data = await response.json();
+    // console.log(data);
+    // setNota(data.nota);
+    // setSimilitud(data.similitud);
+    // setSeleccionarArchivoPopup(false);
+    // setMostrarCalificacionPopUp(true);
   };
 
   React.useEffect(() => {
@@ -169,22 +187,26 @@ function Index() {
             </div>
             <button
               onClick={async () => {
-                // console.log(cancionCargada);
+                console.log(cancionCargada);
                 const fileContent = cancionCargada;
                 const blob = new Blob([fileContent], { type: "audio/mpeg" });
                 const url = URL.createObjectURL(blob);
-                const audioBlob = await fetch(url).then((r) => r.blob());
-                const audioFile = new File([audioBlob], 'voice.wav', { type: 'audio/wav' });
+                const audioFile = new File([blob], "voice.wav", {
+                  type: "audio/wav",
+                });
                 const formData = new FormData(); // preparing to send to the server
-                formData.append('link', audioFile);
-                return fetch("http://localhost:5000/numero", {
-                    method: "POST",
-                    body: formData,
-                  
-                  }).then((res) => res.json()).then((data) => {
+                formData.append("audio", audioFile);
+                return fetch("http://localhost:5000/send-audio", {
+                  method: "POST",
+                  body: formData,
+                })
+                  .then((res) => res.json())
+                  .then((data) => {
                     console.log(data);
                     setNota(data.nota);
                     setSimilitud(data.similitud);
+                    setSeleccionarArchivoPopup(false);
+                    setMostrarCalificacionPopUp(true);
                   });
                 // blobToBase64(blob).then((base64Data) => {
                 //   console.log(base64Data);
