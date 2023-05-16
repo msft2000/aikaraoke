@@ -21,6 +21,8 @@ function Index() {
   const [cancionElegida, setCancionElegida] = React.useState("Lamento Boliviano");
   const [cancionReproducir, setcancionReproducir] = React.useState(false);
   const [finCancion, setFinCancion] = React.useState(false);
+  const [nota, setNota] = React.useState("0");
+  const [similitud, setSimilitud] = React.useState("0%");
   const handleCantarPausa = () => {
     cancionReproducir ? setcancionReproducir(false) : setcancionReproducir(true);
   };
@@ -38,7 +40,14 @@ function Index() {
     "La Bamba": LBAM,
     "Te Puedes Marchar": ATPM,
   };
-
+  const lecturaNota = () => {
+    fetch("http://localhost:3000/nota.json")
+      .then((res) => res.json())
+      .then((data) => {
+        setNota(data.nota);
+        setSimilitud(data.similitud);
+      });
+  };
   return (
     <React.Fragment>
       <div id="index--container">
@@ -70,6 +79,7 @@ function Index() {
               setcancionReproducir(false);
               setFinCancion(true);
               setMostrarCalificacionPopUp(true);
+              lecturaNota();
             }}
           />
         </div>
@@ -131,10 +141,10 @@ function Index() {
             <div className="popup--body">
               <h4>Nombre: {cancionElegida}</h4>
               <h4>
-                Calificacion: <span>100</span>
+                Calificacion: <span>{nota}</span>
               </h4>
               <h4>
-                Similaridad: <span>100%</span>
+                Similaridad: <span>{similitud}</span>
               </h4>
             </div>
             <button onClick={() => setMostrarCalificacionPopUp(false)}>
