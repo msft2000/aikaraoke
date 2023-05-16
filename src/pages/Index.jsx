@@ -129,7 +129,7 @@ function Index() {
           <ReactPlayer
             url={cancionesURL[cancionElegida]}
             playing={cancionReproducir}
-            controls={true}
+            controls={false}
             onEnded={() => {
               setcancionReproducir(false);
               setFinCancion(true);
