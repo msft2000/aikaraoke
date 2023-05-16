@@ -41,6 +41,7 @@ function Index() {
     "Te Puedes Marchar": ATPM,
   };
   const lecturaNota = () => {
+
     fetch("http://localhost:3000/nota.json")
       .then((res) => res.json())
       .then((data) => {
@@ -48,6 +49,9 @@ function Index() {
         setSimilitud(data.similitud);
       });
   };
+  const saveRecorderSound = () => {
+    
+  }
   return (
     <React.Fragment>
       <div id="index--container">
@@ -78,6 +82,7 @@ function Index() {
             onEnded={() => {
               setcancionReproducir(false);
               setFinCancion(true);
+              saveRecorderSound();
               setMostrarCalificacionPopUp(true);
               lecturaNota();
             }}
