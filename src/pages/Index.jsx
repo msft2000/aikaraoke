@@ -14,6 +14,8 @@ function Index() {
     React.useState(false);
   const [seleccionarArchivoPopup, setSeleccionarArchivoPopup] =
     React.useState(false);
+  const [mostrarCalificacionPopUp, setMostrarCalificacionPopUp] =
+    React.useState(false);
   const [cancionGrabada, setCancionGrabada] = React.useState(null);
   const [cancionCargada, setCancionCargada] = React.useState(false);
   const [cancionElegida, setCancionElegida] = React.useState("Lamento Boliviano");
@@ -68,10 +70,11 @@ function Index() {
           <ReactPlayer
             url={cancionesURL[cancionElegida]}
             playing={cancionReproducir}
-            controls={false}
+            controls={true}
             onEnded={() => {
               setcancionReproducir(false);
               setFinCancion(true);
+              setMostrarCalificacionPopUp(true);
             }}
           />
         </div>
@@ -123,6 +126,19 @@ function Index() {
               />
             </div>
             <button onClick={() => setSeleccionarArchivoPopup(false)}>Cerrar</button>
+          </div>
+        </div>
+      )}
+      {mostrarCalificacionPopUp && (
+        <div className="popup">
+          <div className="popup--container">
+            <h3>Calificacion</h3>
+            <div className="popup--body">
+              <h4>Nombre: {cancionElegida}</h4>
+              <h4>Calificacion: 100</h4>
+              <h4>Similaridad: 100%</h4>
+            </div>
+            <button onClick={() => setMostrarCalificacionPopUp(false)}>Cerrar</button>
           </div>
         </div>
       )}
