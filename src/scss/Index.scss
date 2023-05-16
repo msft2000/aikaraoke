@@ -94,4 +94,20 @@ body {
       width: auto !important;
     }
   }
+  .voice-onde--container{
+    iframe {
+      width: 350px;
+      height: 200px;
+      border-radius: 15px;
+    }
+    div {
+      height: auto !important;
+      width: 350px !important;
+      border-radius: 15px;
+    }
+  }
+  canvas{
+    width: 350px;
+    height: 200px;
+  }
 }

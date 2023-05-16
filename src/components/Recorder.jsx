@@ -21,22 +21,52 @@ class Recorder extends Component {
       recordState: RecordState.STOP,
     });
   };
-
+  pause = () => {
+    this.setState({
+      recordState: RecordState.PAUSE,
+    });
+  };
   //audioData contains blob and blobUrl
   onStop = (audioData) => {
-    // console.log("audioData", audioData);
     this.props.setCancionGrabada(audioData);
   };
+  componentDidUpdate(prevProps) {
+    if (prevProps.cancionReproducir !== this.props.cancionReproducir) {
+      this.updateData();
+    }
+    if (prevProps.finCancion !== this.props.finCancion) {
+      this.finCancion();
+    }
+  }
 
+  updateData() {
+    if(this.props.cancionReproducir){
+      this.setState({
+        recordState: RecordState.START,
+      });
+    }else{
+      this.setState({
+        recordState: RecordState.PAUSE,
+      });
+    }
+  }
+  finCancion() {
+    if(this.props.finCancion){
+      this.setState({
+        recordState: RecordState.STOP,
+      });
+    }
+  }
   render() {
     const { recordState } = this.state;
 
     return (
       <div>
         <AudioReactRecorder state={recordState} onStop={this.onStop} />
+        {/* <button onClick={this.start}>Start</button>
+        <button onClick={this.pause}>Pause</button>
+        <button onClick={this.stop}>Stop</button> */}
 
-        <button onClick={this.start}>Start</button>
-        <button onClick={this.stop}>Stop</button>
       </div>
     );
   }

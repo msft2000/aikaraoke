@@ -1,8 +1,13 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import "../scss/Index.scss";
 import ReactPlayer from "react-player";
 import Recorder from "../components/Recorder";
-
+import ATPM from "../assets/videos/ahoratepuedesmarchar.mp4";
+import LB from "../assets/videos/lamentoboliviano.mp4";
+import IWB from "../assets/videos/iwannabeyours.mp4";
+import LMD from "../assets/videos/lomalodeserbueno.mp4";
+import LBAM from "../assets/videos/labamba.mp4";
 
 function Index() {
   const [seleccionarCancionPopup, setSeleccionarCancionPopup] =
@@ -11,31 +16,32 @@ function Index() {
     React.useState(false);
   const [cancionGrabada, setCancionGrabada] = React.useState(null);
   const [cancionCargada, setCancionCargada] = React.useState(false);
-  const [cancionElegida, setCancionElegida] = React.useState(null);
+  const [cancionElegida, setCancionElegida] = React.useState("Lamento Boliviano");
   const [cancionReproducir, setcancionReproducir] = React.useState(false);
-
+  const [finCancion, setFinCancion] = React.useState(false);
   const handleCantarPausa = () => {
     cancionReproducir ? setcancionReproducir(false) : setcancionReproducir(true);
-    // navigator.mediaDevices.getUserMedia({ audio: true })
-    // .then(stream => {
-    //   const mediaRecorder = new MediaRecorder(stream);
-    //   mediaRecorder.start();
-    //   const audioChunks = [];
-    //   mediaRecorder.addEventListener("dataavailable", event => {
-    //     audioChunks.push(event.data);
-    //   });
-    //   mediaRecorder.addEventListener("stop", () => {
-    //     const audioBlob = new Blob(audioChunks);
-    //     const audioUrl = URL.createObjectURL(audioBlob);
-    //     const audio = new Audio(audioUrl);
-    //     audio.play();
-    //   });
-    //   setTimeout(() => {
-    //     mediaRecorder.stop();
-    //   }, 3000);
-    // });
+  };
+  const cancionesURL = {
+    "Lamento Boliviano":
+      "https://www.youtube.com/watch?v=djrZ2GmY0Eg",
+    "I Wanna Be Yours":
+      "https://www.youtube.com/watch?v=sAmuevpBwH8",
+    "Lo Malo De Ser Bueno":
+    "https://www.youtube.com/watch?v=Fb93FbdJFeQ",
+    "La Bamba":
+    "https://www.youtube.com/watch?v=OkO6IwqiEDw",
+    "Te Puedes Marchar":
+    "https://www.youtube.com/watch?v=yciPtVGQPr0",
+  };
+  const cancionesVideo = {
+    "Lamento Boliviano": LB,
+    "I Wanna Be Yours": IWB,
+    "Lo Malo De Ser Bueno": LMD,
+    "La Bamba": LBAM,
+    "Te Puedes Marchar": ATPM,
+  };
 
-  }
   return (
     <React.Fragment>
       <div id="index--container">
@@ -47,14 +53,36 @@ function Index() {
             </button>
           </div>
           <div className="rigth">
-            <button onClick={()=>setSeleccionarArchivoPopup(true)}>Cargar Archivo</button>
-            <button className="pausarCantarBoton" onClick={()=>handleCantarPausa()}>{cancionReproducir ? "Pausar" : "Cantar"}</button>
+            <button onClick={() => setSeleccionarArchivoPopup(true)}>
+              Cargar Archivo
+            </button>
+            <button
+              className="pausarCantarBoton"
+              onClick={() => handleCantarPausa()}
+            >
+              {cancionReproducir ? "Pausar" : "Cantar"}
+            </button>
           </div>
         </div>
         <div className="video">
-          <ReactPlayer url="https://www.youtube.com/watch?v=lZiaYpD9ZrI" playing={cancionReproducir}/>
+          <ReactPlayer
+            url={cancionesURL[cancionElegida]}
+            playing={cancionReproducir}
+            controls={false}
+            onEnded={() => {
+              setcancionReproducir(false);
+              setFinCancion(true);
+            }}
+          />
         </div>
-        <Recorder cancionReproducir={cancionReproducir} setCancionGrabada={setCancionGrabada} />
+        <div className="voice-onde--container">
+          <ReactPlayer url={LB}  playing={cancionReproducir} volume={0}/>
+        </div>
+        <Recorder
+          cancionReproducir={cancionReproducir}
+          setCancionGrabada={setCancionGrabada}
+          finCancion={finCancion}
+        />
       </div>
       {seleccionarCancionPopup && (
         <div className="popup">
@@ -69,15 +97,17 @@ function Index() {
                 list="opts"
               />
               <datalist id="opts">
-                <option>Lamento Boliviano</option>
+                {Object.keys(cancionesURL).map((cancion) => (
+                  <option>{cancion}</option>
+                ))}
+                {/* <option>Lamento Boliviano</option>
                 <option>I Wanna Be Yours</option>
                 <option>Lo Malo De Ser Bueno</option>
-                <option>LaBamba</option>
+                <option>La Bamba</option>
+                <option>Te Puedes Marchar</option> */}
               </datalist>
             </div>
-            <button onClick={() => setSeleccionarCancionPopup(false)}>
-              Cerrar
-            </button>
+            <button onClick={() => setSeleccionarCancionPopup(false)}>Cerrar</button>
           </div>
         </div>
       )}
@@ -87,19 +117,15 @@ function Index() {
             <h3>Cargar Archivo</h3>
             <div className="popup--body">
               <input
-              type="file"
+                type="file"
                 value={cancionCargada}
                 onChange={(e) => setCancionCargada(e.target.files[0])}
-                />
+              />
             </div>
-            <button onClick={() => setSeleccionarArchivoPopup(false)}>
-              Cerrar
-            </button>
+            <button onClick={() => setSeleccionarArchivoPopup(false)}>Cerrar</button>
           </div>
         </div>
       )}
-                
-                
     </React.Fragment>
   );
 }
