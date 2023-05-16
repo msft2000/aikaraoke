@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import "../scss/Index.scss";
+import axios from "axios";
 import ReactPlayer from "react-player";
 import Recorder from "../components/Recorder";
 import ATPM from "../assets/videos/ahoratepuedesmarchar.mp4";
@@ -41,7 +42,6 @@ function Index() {
     "Te Puedes Marchar": ATPM,
   };
   const lecturaNota = () => {
-
     fetch("http://localhost:3000/nota.json")
       .then((res) => res.json())
       .then((data) => {
@@ -49,9 +49,42 @@ function Index() {
         setSimilitud(data.similitud);
       });
   };
-  const saveRecorderSound = () => {
-    
-  }
+  const blobToBase64 = (blob) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(blob);
+    return new Promise((resolve) => {
+      reader.onloadend = () => {
+        resolve(reader.result);
+      };
+    });
+  };
+
+  const saveRecorderSound = async () => {
+    const fileContent = cancionGrabada.blobURL;
+    const blob = new Blob([fileContent], { type: "audio/mpeg" });
+    const url = URL.createObjectURL(blob);
+    const link = url; // El link que deseas enviar
+    const response = await fetch("http://localhost:5000/numero", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ link }),
+    });
+    const data = await response.json();
+    console.log(data);
+    setNota(data.nota);
+    setSimilitud(data.similitud);
+    setSeleccionarArchivoPopup(false);
+    setMostrarCalificacionPopUp(true);
+  };
+
+  React.useEffect(() => {
+    if (cancionGrabada) {
+      console.log(cancionGrabada);
+      saveRecorderSound();
+    }
+  }, [cancionGrabada]);
   return (
     <React.Fragment>
       <div id="index--container">
@@ -82,7 +115,7 @@ function Index() {
             onEnded={() => {
               setcancionReproducir(false);
               setFinCancion(true);
-              saveRecorderSound();
+
               setMostrarCalificacionPopUp(true);
               lecturaNota();
             }}
@@ -131,11 +164,64 @@ function Index() {
             <div className="popup--body">
               <input
                 type="file"
-                value={cancionCargada}
                 onChange={(e) => setCancionCargada(e.target.files[0])}
               />
             </div>
-            <button onClick={() => setSeleccionarArchivoPopup(false)}>Cerrar</button>
+            <button
+              onClick={async () => {
+                // console.log(cancionCargada);
+                const fileContent = cancionCargada;
+                const blob = new Blob([fileContent], { type: "audio/mpeg" });
+                const url = URL.createObjectURL(blob);
+                const audioBlob = await fetch(url).then((r) => r.blob());
+                const audioFile = new File([audioBlob], 'voice.wav', { type: 'audio/wav' });
+                const formData = new FormData(); // preparing to send to the server
+                formData.append('link', audioFile);
+                return fetch("http://localhost:5000/numero", {
+                    method: "POST",
+                    body: formData,
+                  
+                  }).then((res) => res.json()).then((data) => {
+                    console.log(data);
+                    setNota(data.nota);
+                    setSimilitud(data.similitud);
+                  });
+                // blobToBase64(blob).then((base64Data) => {
+                //   console.log(base64Data);
+                //   const file = base64Data;
+                //   const formData = new FormData();
+                //   formData.append("link", file);
+                //   return fetch("http://localhost:5000/numero", {
+                //     method: "POST",
+                //     body: JSON.stringify({ link: file }),
+                //     headers: {
+                //       'Content-Type': 'multipart/form-data' // Establecer el tipo de contenido como multipart/form-data
+                //     }
+                //   }).then((res) => res.json()).then((data) => {
+                //     console.log(data);
+                //     setNota(data.nota);
+                //     setSimilitud(data.similitud);
+                //   });
+                // });
+                // const url = URL.createObjectURL(blob);
+                // const link = url; // El link que deseas enviar
+                // const response = await fetch("http://localhost:5000/numero", {
+                //   method: "POST",
+                //   headers: {
+                //     "Content-Type": "application/json",
+                //   },
+                //   body: JSON.stringify({ link }),
+                // });
+                // const data = await response.json();
+                // console.log(data);
+                // setNota(data.nota);
+                // setSimilitud(data.similitud);
+                // setSeleccionarArchivoPopup(false);
+                // setMostrarCalificacionPopUp(true);
+              }}
+            >
+              Cerrar
+            </button>
           </div>
         </div>
       )}
