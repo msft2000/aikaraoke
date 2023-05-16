@@ -60,12 +60,12 @@ function Index() {
   };
 
   const saveRecorderSound = async () => {
-    const fileContent = cancionGrabada;
-    const blob = new Blob([fileContent], { type: "audio/wav" });
-    const url = URL.createObjectURL(blob);
-    const audioFile = new File([blob], "voice.wav", {
-      type: "audio/wav",
-    });
+    const audioBlob = await fetch(cancionGrabada.url).then((r) => r.blob());
+    const audioFile = new File([audioBlob], 'voice.wav', { type: 'audio/wav' });
+    // const url = URL.createObjectURL(blob);
+    // const audioFile = new File([blob], "voice.wav", {
+    //   type: "audio/wav",
+    // });
     const formData = new FormData(); // preparing to send to the server
     formData.append("audio", audioFile);
     return fetch("http://localhost:5000/send-audio", {
