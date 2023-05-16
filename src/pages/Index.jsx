@@ -131,12 +131,12 @@ function Index() {
       )}
       {mostrarCalificacionPopUp && (
         <div className="popup">
-          <div className="popup--container">
+          <div className="popup--container calificacion">
             <h3>Calificacion</h3>
             <div className="popup--body">
               <h4>Nombre: {cancionElegida}</h4>
-              <h4>Calificacion: 100</h4>
-              <h4>Similaridad: 100%</h4>
+              <h4>Calificacion: <span>100</span></h4>
+              <h4>Similaridad: <span>100%</span></h4>
             </div>
             <button onClick={() => setMostrarCalificacionPopUp(false)}>Cerrar</button>
           </div>

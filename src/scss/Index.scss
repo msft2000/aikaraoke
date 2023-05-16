@@ -34,6 +34,20 @@ body {
         background-color: linear-gradient(90deg,#ff4b2b,#ff416c) !important;
         }
     }
+    .calificacion{
+      max-width: 350px;
+      font-size: larger;
+      font-family: 'Courier New', Courier, monospace;
+      h3{
+        margin-bottom: 10px;
+      }
+      .popup--body{
+        margin-bottom: 10px;
+      }
+      span{
+        color: #ff416c;
+      }
+    }
     .seleccionar-archivo{
         max-width: 350px;
     }
