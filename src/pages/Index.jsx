@@ -25,16 +25,11 @@ function Index() {
     cancionReproducir ? setcancionReproducir(false) : setcancionReproducir(true);
   };
   const cancionesURL = {
-    "Lamento Boliviano":
-      "https://www.youtube.com/watch?v=djrZ2GmY0Eg",
-    "I Wanna Be Yours":
-      "https://www.youtube.com/watch?v=sAmuevpBwH8",
-    "Lo Malo De Ser Bueno":
-    "https://www.youtube.com/watch?v=Fb93FbdJFeQ",
-    "La Bamba":
-    "https://www.youtube.com/watch?v=OkO6IwqiEDw",
-    "Te Puedes Marchar":
-    "https://www.youtube.com/watch?v=yciPtVGQPr0",
+    "Lamento Boliviano": "https://www.youtube.com/watch?v=djrZ2GmY0Eg",
+    "I Wanna Be Yours": "https://www.youtube.com/watch?v=fKLVR2Gz5iQ",
+    "Lo Malo De Ser Bueno": "https://www.youtube.com/watch?v=Fb93FbdJFeQ",
+    "La Bamba": "https://www.youtube.com/watch?v=UmfyX7v99Ug",
+    "Te Puedes Marchar": "https://www.youtube.com/watch?v=yciPtVGQPr0",
   };
   const cancionesVideo = {
     "Lamento Boliviano": LB,
@@ -79,7 +74,7 @@ function Index() {
           />
         </div>
         <div className="voice-onde--container">
-          <ReactPlayer url={LB}  playing={cancionReproducir} volume={0}/>
+          <ReactPlayer url={LB} playing={cancionReproducir} volume={0} />
         </div>
         <Recorder
           cancionReproducir={cancionReproducir}
@@ -135,10 +130,16 @@ function Index() {
             <h3>Calificacion</h3>
             <div className="popup--body">
               <h4>Nombre: {cancionElegida}</h4>
-              <h4>Calificacion: <span>100</span></h4>
-              <h4>Similaridad: <span>100%</span></h4>
+              <h4>
+                Calificacion: <span>100</span>
+              </h4>
+              <h4>
+                Similaridad: <span>100%</span>
+              </h4>
             </div>
-            <button onClick={() => setMostrarCalificacionPopUp(false)}>Cerrar</button>
+            <button onClick={() => setMostrarCalificacionPopUp(false)}>
+              Cerrar
+            </button>
           </div>
         </div>
       )}
