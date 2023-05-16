@@ -22,8 +22,8 @@ function Index() {
   const [cancionElegida, setCancionElegida] = React.useState("Lamento Boliviano");
   const [cancionReproducir, setcancionReproducir] = React.useState(false);
   const [finCancion, setFinCancion] = React.useState(false);
-  const [nota, setNota] = React.useState("0");
-  const [similitud, setSimilitud] = React.useState("0%");
+  const [nota, setNota] = React.useState("Calculando, por favor espere...");
+  const [similitud, setSimilitud] = React.useState("Calculando, por favor espere...");
   const handleCantarPausa = () => {
     cancionReproducir ? setcancionReproducir(false) : setcancionReproducir(true);
   };
