@@ -68,6 +68,7 @@ function Index() {
     // });
     const formData = new FormData(); // preparing to send to the server
     formData.append("audio", audioFile);
+    formData.append("cancion", cancionElegida);
     return fetch("http://localhost:5000/send-audio", {
       method: "POST",
       body: formData,
@@ -196,6 +197,8 @@ function Index() {
                 });
                 const formData = new FormData(); // preparing to send to the server
                 formData.append("audio", audioFile);
+                //ahora agregamos tamben la variabel cancionElegida al envio
+                formData.append("cancion", cancionElegida);
                 return fetch("http://localhost:5000/send-audio", {
                   method: "POST",
                   body: formData,

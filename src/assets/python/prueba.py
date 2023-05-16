@@ -7,6 +7,7 @@ CORS(app)
 
 @app.route("/send-audio", methods=["POST"])
 def obtener_numero():
+    nombre = request.form.get("cancion")
     archivo = request.files['audio']
     archivo.save('./archivo.wav') 
     # audio_base64 = request.json.get("link")
